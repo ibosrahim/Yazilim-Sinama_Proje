@@ -1,0 +1,53 @@
+﻿@using YazılımSınamaProje.Models
+@model List<Offer>
+
+@{
+    ViewData["Title"] = "OfferList";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<h1>Teklif Listesi</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.TeklifBulunamadi))
+{
+    <p>@ViewBag.TeklifBulunamadi</p>
+}
+else
+{
+    @foreach (var item in Model)
+    {
+        <div class="card">
+            <div class="card-header text-right">
+                Teklifiniz: @item.Project.ProjectBudget | Gelen Teklif :@item.BidAmount $
+            </div>
+            <div class="card-body">
+
+                <h4 class="card-title">@item.Project.ProjectTitle</h4>
+                <p class="card-text">@item.Project.ProjectDescription</p>
+                <p class="card-text">Teklif Veren:@item.BidderID || </p>
+                <form method="post" action="@Url.Action("OfferConfirmation", "Work")">
+                    <input type="hidden" name="projectId" value="@item.Project.ProjectID" />
+                    <input type="hidden" name="teklifverenID" value="@item.BidderID" />
+                    <input type="hidden" name="teklifalanID" value="@item.OfferRecipientID" />
+                    <input type="hidden" name="newbudget" value="@item.BidAmount" />
+                    <button type="submit" class="btn btn-primary">Teklifi Kabul Et</button>
+                </form>
+            </div>
+        </div>
+    }
+}
+<br />
